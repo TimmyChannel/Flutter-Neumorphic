@@ -72,11 +72,13 @@ class NeumorphicApp extends StatelessWidget {
     this.actions,
   }) : super(key: key);
 
-  ThemeData _getMaterialTheme(NeumorphicThemeData theme) {
+  ThemeData _getMaterialTheme(
+      NeumorphicThemeData theme, Brightness brightness) {
     final color = theme.accentColor;
 
     if (color is MaterialColor) {
       return ThemeData(
+        brightness: brightness,
         primarySwatch: color,
         textTheme: theme.textTheme,
         iconTheme: theme.iconTheme,
@@ -84,25 +86,27 @@ class NeumorphicApp extends StatelessWidget {
       );
     }
 
-    return ThemeData(
-      primaryColor: theme.accentColor,
-      accentColor: theme.variantColor,
-      iconTheme: theme.iconTheme,
-      brightness: ThemeData.estimateBrightnessForColor(theme.baseColor),
-      primaryColorBrightness:
-          ThemeData.estimateBrightnessForColor(theme.accentColor),
-      accentColorBrightness:
-          ThemeData.estimateBrightnessForColor(theme.variantColor),
-      textTheme: theme.textTheme,
-      scaffoldBackgroundColor: theme.baseColor,
+    return ThemeData.from(
+      colorScheme: ColorScheme(
+        brightness: brightness,
+        primary: theme.accentColor,
+        onPrimary: theme.accentColor,
+        secondary: theme.variantColor,
+        onSecondary: theme.variantColor,
+        error: Colors.red.shade900,
+        onError: Colors.red.shade900,
+        surface: theme.baseColor,
+        onSurface: theme.baseColor,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final materialTheme = this.materialTheme ?? _getMaterialTheme(theme);
+    final materialTheme = this.materialTheme ?? _getMaterialTheme(theme, Brightness.light);
     final materialDarkTheme =
-        this.materialDarkTheme ?? _getMaterialTheme(darkTheme);
+        this.materialDarkTheme ?? _getMaterialTheme(darkTheme, Brightness.dark);
+
     return NeumorphicTheme(
       theme: theme,
       darkTheme: darkTheme,
